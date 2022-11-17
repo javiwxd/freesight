@@ -599,7 +599,7 @@ BOOL is_elevated()
     return fRet;
 }
 
-int main(int argc, wchar_t *argv[])
+int __cdecl wmain(int argc, wchar_t *argv[])
 {
 
     std::string password;
@@ -715,13 +715,13 @@ int main(int argc, wchar_t *argv[])
         {
             logger::log_info("Parece que la aplicación sigue habilitada dentro del firewall, intentando bloquear...");
 
-            /*if (!is_elevated())
+            if (!is_elevated())
             {
                 MessageBox(FindWindowA("ConsoleWindowClass", NULL), L"Para que el programa funcione debes de iniciarlo como administrador", L"eres tonto?", MB_OK | MB_ICONERROR);
                 return 0;
-            }*/
+            }
 
-            /*INetFwPolicy2* pNetFwPolicy2 = NULL;
+            INetFwPolicy2* pNetFwPolicy2 = NULL;
             WFCOMInitialize(&pNetFwPolicy2);
 
             int random_number = rand() % 65535 + 1;
@@ -734,8 +734,8 @@ int main(int argc, wchar_t *argv[])
             hr = WindowsFirewallBlockApp(
                 pNetFwPolicy2,
                 p_name,
-                rule_name_final);*/
-            if (!FAILED(hr))
+                rule_name_final);
+            if (FAILED(hr))
             {
                 logger::log_error("WindowsFirewallAddApp failed: 0x" + std::to_string(hr));
                 WindowsFirewallCleanup(fwProfile);
