@@ -7,10 +7,15 @@
 #include <string>
 #include <locale>
 #include <codecvt>
+#include <filesystem>
+#include <Msi.h>
 
 #pragma comment(lib, "ole32.lib")
 #pragma comment(lib, "oleaut32.lib")
+#pragma comment(lib, "msi.lib")
+
 #include "logger.h"
+#include "http_manager.h"
 
 HRESULT WindowsFirewallInitialize(OUT INetFwProfile **fwProfile)
 {
@@ -574,35 +579,38 @@ HRESULT WFCOMInitialize(INetFwPolicy2 **ppNetFwPolicy2)
     }
 }
 
-BOOL is_elevated() {
+BOOL is_elevated()
+{
     BOOL fRet = FALSE;
     HANDLE hToken = NULL;
-    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+    {
         TOKEN_ELEVATION Elevation;
         DWORD cbSize = sizeof(TOKEN_ELEVATION);
-        if (GetTokenInformation(hToken, TokenElevation, &Elevation, sizeof(Elevation), &cbSize)) {
+        if (GetTokenInformation(hToken, TokenElevation, &Elevation, sizeof(Elevation), &cbSize))
+        {
             fRet = Elevation.TokenIsElevated;
         }
     }
-    if (hToken) {
+    if (hToken)
+    {
         CloseHandle(hToken);
     }
     return fRet;
 }
 
-int __cdecl wmain(int argc, wchar_t *argv[])
+int main(int argc, wchar_t *argv[])
 {
 
-	std::string password;
-	std::cout << "Este programa requeiere una contraseña para ser ejecutado: ";
-	std::cin >> password;
-	
-	if (password != "ww120") {
+    std::string password;
+    std::cout << "Este programa requeiere una contraseña para ser ejecutado: ";
+    std::cin >> password;
+
+    if (password != "ww120")
+    {
         MessageBox(FindWindowA("ConsoleWindowClass", NULL), L"Esa contraseña es incorrecta, no estas autorizado a usar este programa", L"No autorizado", MB_OK | MB_ICONERROR);
-		return 0;
-	}
-		
-	
+        return 0;
+    }
 
     HRESULT hr = S_OK;
     HRESULT comInit = E_FAIL;
@@ -707,12 +715,13 @@ int __cdecl wmain(int argc, wchar_t *argv[])
         {
             logger::log_info("Parece que la aplicación sigue habilitada dentro del firewall, intentando bloquear...");
 
-            if (!is_elevated()) {
+            /*if (!is_elevated())
+            {
                 MessageBox(FindWindowA("ConsoleWindowClass", NULL), L"Para que el programa funcione debes de iniciarlo como administrador", L"eres tonto?", MB_OK | MB_ICONERROR);
                 return 0;
-            }
+            }*/
 
-            INetFwPolicy2 *pNetFwPolicy2 = NULL;
+            /*INetFwPolicy2* pNetFwPolicy2 = NULL;
             WFCOMInitialize(&pNetFwPolicy2);
 
             int random_number = rand() % 65535 + 1;
@@ -725,8 +734,8 @@ int __cdecl wmain(int argc, wchar_t *argv[])
             hr = WindowsFirewallBlockApp(
                 pNetFwPolicy2,
                 p_name,
-                rule_name_final);
-            if (FAILED(hr))
+                rule_name_final);*/
+            if (!FAILED(hr))
             {
                 logger::log_error("WindowsFirewallAddApp failed: 0x" + std::to_string(hr));
                 WindowsFirewallCleanup(fwProfile);
@@ -741,8 +750,66 @@ int __cdecl wmain(int argc, wchar_t *argv[])
             }
             else
             {
-                logger::log_info("La aplicación se ha bloqueado correctamente, puedes cerrar este programa");
-                MessageBox(FindWindowA("ConsoleWindowClass", NULL), L"El programa ha sido bloqueado correctamente", L"Bloqueado correctamente", MB_OK | MB_ICONINFORMATION);
+                logger::log_ok("La aplicación se ha bloqueado correctamente, intentando instalar 1.1.1.1...");
+                int response = MessageBox(
+                    NULL,
+                    L"El programa ha sido bloqueado correctamente\n\n¿Quieres instalar una VPN?",
+                    L"Bloqueado correctamente",
+                    MB_YESNOCANCEL | MB_ICONINFORMATION);
+
+                std::cout << "msgbox code: " << response << std::endl;
+
+                switch (response)
+                {
+
+                case IDYES:
+                    logger::log_ok("El usuario ha aceptado instalar 1.1.1.1, iniciando instalación...");
+
+                    if (std::filesystem::exists("temp/vpn_installer.msi"))
+                    {
+                        logger::log_info("El archivo vpn_installer.msi existe, iniciando instalación...");
+						
+                        int run = system(("msiexec /a \"" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "\" /qb+").c_str());
+                        if (run == 0)
+                        {
+                            logger::log_ok("El archivo vpn_installer.msi se ha instalado correctamente");
+                        }
+                        else
+                        {
+                            logger::log_error("El archivo vpn_installer.msi no se ha instalado correctamente");
+                        }
+                        // ShellExecute(NULL, L"open", L"temp/vpn_installer.msi", NULL, NULL, SW_SHOW);
+                    }
+                    else
+                    {
+                        logger::log_info("No se ha encontrado el instalador, descargando...");
+                        http_manager::download_file(NULL, "https://1111-releases.cloudflareclient.com/windows/Cloudflare_WARP_Release-x64.msi", "temp/vpn_installer.msi", "1.1.1.1");
+                        logger::log_ok("Instalador descargado correctamente, iniciando instalación...");
+                        int run = system(("msiexec /a \"" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "\" /qb+").c_str());
+                        if (run == 0)
+                        {
+                            logger::log_ok("El archivo vpn_installer.msi se ha instalado correctamente");
+                        }
+                        else
+                        {
+                            logger::log_error("El archivo vpn_installer.msi no se ha instalado correctamente");
+                        }
+                    }
+
+                    std::cin.get();
+                    return 0;
+
+                    break;
+
+                case IDCANCEL:
+                case IDNO:
+                default:
+                    logger::log_info("El usuario ha cancelado la instalación de la VPN, cerrando programa...");
+                    std::cin.get();
+                    return 0;
+                    break;
+                }
+
                 std::cin.get();
                 return 0;
             }
