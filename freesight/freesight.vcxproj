@@ -135,6 +135,13 @@
   <ItemGroup>
     <ClInclude Include="http_manager.h" />
     <ClInclude Include="logger.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="freesight.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon\box.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
