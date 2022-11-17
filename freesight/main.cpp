@@ -601,9 +601,18 @@ BOOL is_elevated()
 
 int __cdecl wmain(int argc, wchar_t *argv[])
 {
+	
+	std::cout << "    ____                    _       __    __ " << std::endl;
+	std::cout << "   / __/_______  ___  _____(_)___ _/ /_  / /_" << std::endl;
+	std::cout << "  / /_/ ___/ _ \\/ _ \\/ ___/ / __ `/ __ \\/ __/" << std::endl;
+	std::cout << " / __/ /  /  __/  __(__  ) / /_/ / / / / /_" << std::endl;
+	std::cout << "/_/ /_/   \\___/\\___/____/_/\\__, /_/ /_/\\__/" << std::endl;
+	std::cout << "                          /____/             " << std::endl;
+	std::cout << "by @holasoyender" << std::endl;
 
+	
     std::string password;
-    std::cout << "Este programa requeiere una contraseña para ser ejecutado: ";
+    std::cout << " -- Este programa requeiere una contraseña para ser ejecutado: ";
     std::cin >> password;
 
     if (password != "ww120")
