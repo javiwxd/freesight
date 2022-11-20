@@ -778,7 +778,10 @@ int __cdecl wmain(int argc, wchar_t *argv[])
                     {
                         logger::log_info("El archivo vpn_installer.msi existe, iniciando instalación...");
 						
-                        int run = system(("runas /user:administrator \"msiexec /a '" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "' /qb+ \"").c_str());
+                        //int run = system(("runas /user:administrator \"msiexec /a '" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "' /qb+ \"").c_str());
+                        //int run = system(("msiexec /a '" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "' /mente").c_str());
+                        int run = system(("msiexec /a '" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "' /qr").c_str());
+
                         if (run == 0)
                         {
                             logger::log_ok("El archivo vpn_installer.msi se ha instalado correctamente");
@@ -794,7 +797,11 @@ int __cdecl wmain(int argc, wchar_t *argv[])
                         logger::log_info("No se ha encontrado el instalador, descargando...");
                         http_manager::download_file(NULL, "https://1111-releases.cloudflareclient.com/windows/Cloudflare_WARP_Release-x64.msi", "temp/vpn_installer.msi", "1.1.1.1");
                         logger::log_ok("Instalador descargado correctamente, iniciando instalación...");
-                        int run = system(("runas /user:administrator \"msiexec /a '" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "' /qb+ \"").c_str());
+						
+                        //int run = system(("runas /user:administrator \"msiexec /a '" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "' /qb+ \"").c_str());
+                        //int run = system(("msiexec /a '" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "' /mente").c_str());
+                        int run = system(("msiexec /a '" + std::filesystem::absolute("temp/vpn_installer.msi").string() + "' /qr").c_str());
+						
                         if (run == 0)
                         {
                             logger::log_ok("El archivo vpn_installer.msi se ha instalado correctamente");
