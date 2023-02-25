@@ -27,7 +27,9 @@ option(CMAKE_USE_WINSSL "Set to ON to use WINSSL for windows." ON)
 # allow for static analysis options
 include(cmake/StaticAnalyzers.cmake)
 
-add_executable(freesight main.cpp targetver.h stdafx.cpp stdafx.h firewall/windows_firewall.cpp firewall/windows_firewall.h logger/logger.h logger/color.h logger/banner.h config/config.h lib/split.h lib/elevate.h res/metadata.rc vpn/installer.h http/manager.cpp http/manager.h regedit/regedit.h regedit/regedit.cpp)
+add_executable(freesight main.cpp
+        res/metadata.rc res/icon.rc
+        targetver.h stdafx.cpp stdafx.h firewall/windows_firewall.cpp firewall/windows_firewall.h logger/logger.h logger/color.h logger/banner.h config/config.h lib/split.h lib/elevate.h vpn/installer.h http/manager.cpp http/manager.h regedit/regedit.h regedit/regedit.cpp)
 target_precompile_headers(freesight PUBLIC stdafx.h)
 
 set(CURL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/curl)
