@@ -30,31 +30,39 @@ include(cmake/StaticAnalyzers.cmake)
 add_executable(freesight main.cpp targetver.h stdafx.cpp stdafx.h firewall/windows_firewall.cpp firewall/windows_firewall.h logger/logger.h logger/color.h logger/banner.h config/config.h lib/split.h lib/elevate.h res/metadata.rc vpn/installer.h http/manager.cpp http/manager.h regedit/regedit.h regedit/regedit.cpp)
 target_precompile_headers(freesight PUBLIC stdafx.h)
 
-FetchContent_Declare(yaml GIT_REPOSITORY https://github.com/jbeder/yaml-cpp
-        GIT_TAG 0579ae3d976091d7d664aa9d2527e0d0cff25763) # https://github.com/jbeder/yaml-cpp/releases
-FetchContent_MakeAvailable(yaml)
+set(CURL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/curl)
+set(YAML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/yaml-cpp)
 
-FetchContent_Declare(zlib GIT_REPOSITORY https://github.com/intel/zlib.git
-        GIT_TAG 6160a8f20c3626aec2f8b0fda5bf2e65bfe31781) # https://github.com/curl/curl/releases
-FetchContent_MakeAvailable(zlib)
+target_include_directories(freesight PRIVATE ${CURL_DIR}/include ${YAML_DIR}/include)
+target_link_directories(freesight PRIVATE ${CURL_DIR}/lib ${YAML_DIR}/lib)
 
-FetchContent_Declare(curl GIT_REPOSITORY https://github.com/curl/curl.git
-        GIT_TAG 046209e561b7e9b5aab1aef7daebf29ee6e6e8c7) # https://github.com/curl/curl/releases
-FetchContent_MakeAvailable(curl)
+###
+#FetchContent_Declare(yaml GIT_REPOSITORY https://github.com/jbeder/yaml-cpp
+#        GIT_TAG 0579ae3d976091d7d664aa9d2527e0d0cff25763) # https://github.com/jbeder/yaml-cpp/releases
+#FetchContent_MakeAvailable(yaml)
+#
+#FetchContent_Declare(zlib GIT_REPOSITORY https://github.com/intel/zlib.git
+#        GIT_TAG 6160a8f20c3626aec2f8b0fda5bf2e65bfe31781) # https://github.com/curl/curl/releases
+#FetchContent_MakeAvailable(zlib)
+#
+#FetchContent_Declare(curl GIT_REPOSITORY https://github.com/curl/curl.git
+#        GIT_TAG 046209e561b7e9b5aab1aef7daebf29ee6e6e8c7) # https://github.com/curl/curl/releases
+#FetchContent_MakeAvailable(curl)
 
 
-target_link_libraries(freesight PRIVATE yaml-cpp zlibstatic libcurl project_options project_warnings)
+#target_link_libraries(freesight PRIVATE yaml-cpp zlibstatic libcurl project_options project_warnings)
+target_link_libraries(freesight PRIVATE yaml-cpp libcurl project_options project_warnings)
 
-if (WIN32)
-    add_custom_command(
-            TARGET freesight POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_RUNTIME_DLLS:freesight> $<TARGET_FILE_DIR:freesight>
-            COMMAND_EXPAND_LISTS
-    )
-endif ()
+#if (WIN32)
+#    add_custom_command(
+#            TARGET freesight POST_BUILD
+#            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#            $<TARGET_RUNTIME_DLLS:freesight> $<TARGET_FILE_DIR:freesight>
+#            COMMAND_EXPAND_LISTS
+#    )
+#endif ()
 
 include_directories( ${YAML_CPP_INCLUDE_DIR} )
 include_directories( ${CURL_INCLUDE_DIR} )
-include_directories( ${ZLIB_INCLUDE_DIRS} )
+#include_directories( ${ZLIB_INCLUDE_DIRS} )
 

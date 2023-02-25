@@ -11,7 +11,7 @@ namespace vpn {
     template<typename = void>
     void install(const char* file_path) {
 
-        UINT result = MsiInstallProductA(file_path, "ACTION=INSTALL REBOOT=ReallySuppress QUIET=1");
+        UINT result = MsiInstallProductA(file_path, nullptr);//"ACTION=INSTALL REBOOT=ReallySuppress QUIET=1");
 
         if (result == ERROR_SUCCESS)
         {
