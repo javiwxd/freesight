@@ -1,11 +1,10 @@
-*           text=auto
-*.h         text
-*.cpp       text
-*.json      text
-*.in        text
-*.sh        eol=lf
-*.bat       eol=crlf
-*.vcproj    eol=crlf
-*.vcxproj   eol=crlf
-*.sln       eol=crlf
-devtools/agent_vm* eol=crlf
+.gitignore		export-ignore
+.gitattributes		export-ignore
+
+update_version		export-ignore
+
+*.bat eol=crlf
+*.sln eol=crlf
+*.vcxproj eol=crlf
+*.vcxproj.filters eol=crlf
+common.props eol=crlf
