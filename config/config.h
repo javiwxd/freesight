@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #include "../lib/split.h"
+#include <yaml-cpp/yaml.h>
 
 class config {
 
@@ -127,11 +128,10 @@ public:
         if(config_exists())
             std::filesystem::remove(get_config_path());
 
-
         YAML::Emitter out;
         out << YAML::BeginMap;
-        out << YAML::Key << "server";
-        out << YAML::Value << "localhost:4001";
+        out << YAML::Key << "auto_update";
+        out << YAML::Value << "true";
         out << YAML::Key << "options";
         out << YAML::Value << YAML::BeginMap;
         out << YAML::Key << "firewall";

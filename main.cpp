@@ -5,6 +5,7 @@
 #pragma comment(lib, "msi.lib")
 
 #define COMPILATION_DATE __DATE__ " " __TIME__
+#define VERSION "0.0.2"
 
 #include "firewall/windows_firewall.h"
 #include "logger/logger.h"
@@ -12,6 +13,8 @@
 #include "config/config.h"
 #include "regedit/regedit.h"
 #include "vpn/installer.h"
+
+#include "updater/updater.h"
 
 BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType);
 
@@ -71,9 +74,17 @@ int main(int argc, char *argv[]) {
     config config_data = config();
     config_data.load_config();
 
+    bool do_update = config_data.get_bool("auto_update", true);
     bool do_firewall = config_data.get_bool("options.firewall", true);
     bool do_regedit = config_data.get_bool("options.regedit", true);
     bool do_vpn = config_data.get_bool("options.vpn", true);
+
+    if(do_update) {
+        logger::log(std::source_location::current(), "Buscando actualizaciones... (auto_update = true)");
+        updater::start_update();
+    } else {
+        logger::log(std::source_location::current(), "No se buscarán actualizaciones (auto_update = false)");
+    }
 
     if (do_firewall) {
         logger::log(std::source_location::current(), "Iniciando firewall... (options.firewall = true)");

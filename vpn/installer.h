@@ -42,6 +42,9 @@ namespace vpn {
                 logger::log(std::source_location::current(),
                             "Instalador descargado correctamente, iniciando instalación...");
                 install(file_name.c_str());
+            } else {
+                logger::log_error(std::source_location::current(),
+                                  "Error al descargar el instalador, código de error: ", err);
             }
         } else {
             logger::log(std::source_location::current(),

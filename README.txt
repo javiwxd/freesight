@@ -41,6 +41,8 @@ ordenadores de los centros educativos de la Comunidad de Madrid.
 
         - yaml-cpp: Licencia MIT (https://github.com/jbeder/yaml-cpp/blob/master/LICENSE)
         - curl: (https://github.com/curl/curl/blob/master/COPYING)
+        - libzippp (https://github.com/ctabin/libzippp/blob/master/LICENCE)
+        - libzip (https://github.com/nih-at/libzip/blob/main/LICENSE)
 
 -- Garantía
 

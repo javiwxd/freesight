@@ -1,4 +1,5 @@
 #include "manager.h"
+#include <curl/curl.h>
 
 namespace manager {
 
@@ -28,6 +29,7 @@ namespace manager {
             curl_easy_setopt(curl_download, CURLOPT_NOPROGRESS, FALSE);
             curl_easy_setopt(curl_download, CURLOPT_PROGRESSFUNCTION, progress_bar);
             //curl_easy_setopt(curl_download, CURLOPT_VERBOSE, 1L);
+            curl_easy_setopt(curl_download, CURLOPT_FOLLOWLOCATION, 1L);
 
             res = curl_easy_perform(curl_download);
 

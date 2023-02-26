@@ -22,7 +22,4 @@
 #include <fstream>
 #include <conio.h>
 
-#include <yaml-cpp/yaml.h>
-#include <curl/curl.h>
-
 #endif //STDAFX_H

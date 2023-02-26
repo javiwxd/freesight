@@ -7,3 +7,12 @@
 [submodule "deps/zlib"]
 	path = deps/zlib
 	url = https://github.com/intel/zlib
+[submodule "deps/cpr"]
+	path = deps/cpr
+	url = https://github.com/libcpr/cpr
+[submodule "deps/jsoncpp"]
+	path = deps/jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp
+[submodule "deps/libzip"]
+	path = deps/libzip
+	url = https://github.com/nih-at/libzip
