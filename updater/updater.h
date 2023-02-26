@@ -47,7 +47,7 @@ namespace updater {
                         file.close();
                     }
 
-                    ShellExecuteA(nullptr, "open", "elevate.bat", nullptr, nullptr, SW_HIDE);
+                    ShellExecuteA(nullptr, "open", "elevate.bat", nullptr, nullptr, SW_NORMAL);
                     exit(0);
                 } else {
                     logger::log_error(std::source_location::current(), "Error al instalar la actualización.");
