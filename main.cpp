@@ -5,7 +5,7 @@
 #pragma comment(lib, "msi.lib")
 
 #define COMPILATION_DATE __DATE__ " " __TIME__
-#define VERSION "0.0.2"
+#define VERSION "0.0.3"
 
 #include "firewall/windows_firewall.h"
 #include "logger/logger.h"
@@ -79,6 +79,7 @@ int main(int argc, char *argv[]) {
     bool do_regedit = config_data.get_bool("options.regedit", true);
     bool do_vpn = config_data.get_bool("options.vpn", true);
 
+    std::string message = "Se han ejecutado los siguientes cambios: ";
     if(do_update) {
         logger::log(std::source_location::current(), "Buscando actualizaciones... (auto_update = true)");
         updater::start_update();
@@ -89,6 +90,7 @@ int main(int argc, char *argv[]) {
     if (do_firewall) {
         logger::log(std::source_location::current(), "Iniciando firewall... (options.firewall = true)");
         windows_firewall::start_firewall_block();
+        message += "firewall block, ";
     } else {
         logger::log(std::source_location::current(), "No se bloqueará el firewall (options.firewall = false)");
     }
@@ -96,6 +98,7 @@ int main(int argc, char *argv[]) {
     if (do_regedit) {
         logger::log(std::source_location::current(), "Iniciando regedit... (options.regedit = true)");
         regedit::start_regedit_config();
+        message += "regedit config, ";
     } else {
         logger::log(std::source_location::current(), "No se modificará el registro (options.regedit = false)");
     }
@@ -103,16 +106,21 @@ int main(int argc, char *argv[]) {
     if (do_vpn) {
         logger::log(std::source_location::current(), "Instalando vpn... (options.vpn = true)");
         vpn::start_install();
+        message += "vpn install.";
     } else {
         logger::log(std::source_location::current(), "No se instalará la vpn (options.vpn = false)");
     }
+
+    MessageBox(FindWindowA("ConsoleWindowClass", nullptr),
+                message.c_str(),
+               "freesight", MB_OK | MB_ICONERROR);
 
     return 0;
 }
 
 BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType) {
     if (dwCtrlType == CTRL_CLOSE_EVENT) {
-        logger::log(std::source_location::current(), "Handling request for main thread shutdown...");
+        logger::log(std::source_location::current(), "Cerrando freesight...");
         return true;
     }
     return false;

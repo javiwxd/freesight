@@ -28,7 +28,7 @@ include(cmake/StaticAnalyzers.cmake)
 
 add_executable(freesight main.cpp
         res/metadata.rc res/icon.rc
-        targetver.h stdafx.cpp stdafx.h firewall/windows_firewall.cpp firewall/windows_firewall.h logger/logger.h logger/color.h logger/banner.h config/config.h lib/split.h lib/elevate.h vpn/installer.h http/manager.cpp http/manager.h regedit/regedit.h regedit/regedit.cpp updater/get_version.h updater/updater.h http/http_get.h lib/wzip.h lib/zip/libzippp.cpp lib/zip/libzippp.h)
+        targetver.h stdafx.c stdafx.h firewall/windows_firewall.cpp firewall/windows_firewall.h logger/logger.h logger/color.h logger/banner.h config/config.h lib/split.h lib/elevate.h vpn/installer.h http/manager.cpp http/manager.h regedit/regedit.h regedit/regedit.cpp updater/get_version.h updater/updater.h http/http_get.h lib/wzip.h lib/zip/libzippp.cpp lib/zip/libzippp.h)
 target_precompile_headers(freesight PUBLIC stdafx.h)
 
 set(CURL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/curl)
