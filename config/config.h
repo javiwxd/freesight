@@ -139,7 +139,7 @@ public:
         out << YAML::Key << "regedit";
         out << YAML::Value << "true";
         out << YAML::Key << "vpn";
-        out << YAML::Value << "true";
+        out << YAML::Value << "false";
         out << YAML::EndMap;
 
         std::ofstream file(get_config_path());

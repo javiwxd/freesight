@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     bool do_update = config_data.get_bool("auto_update", true);
     bool do_firewall = config_data.get_bool("options.firewall", true);
     bool do_regedit = config_data.get_bool("options.regedit", true);
-    bool do_vpn = config_data.get_bool("options.vpn", true);
+    bool do_vpn = config_data.get_bool("options.vpn", false);
 
     std::string message = "Se han ejecutado los siguientes cambios: ";
     if(do_update) {
