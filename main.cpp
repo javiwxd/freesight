@@ -5,7 +5,7 @@
 #pragma comment(lib, "msi.lib")
 
 #define COMPILATION_DATE __DATE__ " " __TIME__
-#define VERSION "0.0.3"
+#define VERSION "0.0.4"
 
 #include "firewall/windows_firewall.h"
 #include "logger/logger.h"
