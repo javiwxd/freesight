@@ -1,21 +1,27 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cert-msc50-cpp"
 #include "windows_firewall.h"
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnreachableCode"
+#pragma ide diagnostic ignored "ConstantConditionsOC"
+#pragma ide diagnostic ignored "modernize-use-nullptr"
 namespace windows_firewall {
 
     HRESULT WindowsFirewallInitialize(OUT INetFwProfile **fwProfile)
     {
         HRESULT hr = S_OK;
-        INetFwMgr *fwMgr = nullptr;
-        INetFwPolicy *fwPolicy = nullptr;
+        INetFwMgr *fwMgr = NULL;
+        INetFwPolicy *fwPolicy = NULL;
 
-        _ASSERT(fwProfile != nullptr);
+        _ASSERT(fwProfile != NULL);
 
-        *fwProfile = nullptr;
+        *fwProfile = NULL;
 
         logger::log(std::source_location::current(), "Initializing Windows Firewall... ");
         hr = CoCreateInstance(
                 __uuidof(NetFwMgr),
-                nullptr,
+                NULL,
                 CLSCTX_INPROC_SERVER,
                 __uuidof(INetFwMgr),
                 (void **)&fwMgr);
@@ -23,7 +29,7 @@ namespace windows_firewall {
         {
             logger::log_error(std::source_location::current(), "CoCreateInstance for INetFwMgr failed: 0x", hr);
 
-            if (fwMgr != nullptr)
+            if (fwMgr != NULL)
             {
                 fwMgr->Release();
             }
@@ -39,12 +45,12 @@ namespace windows_firewall {
         if (FAILED(hr))
         {
             logger::log_error(std::source_location::current(), "get_LocalPolicy failed: 0x", hr);
-            if (fwPolicy != nullptr)
+            if (fwPolicy != NULL)
             {
                 fwPolicy->Release();
             }
 
-            if (fwMgr != nullptr)
+            if (fwMgr != NULL)
             {
                 fwMgr->Release();
             }
@@ -61,12 +67,12 @@ namespace windows_firewall {
         if (FAILED(hr))
         {
             logger::log_error(std::source_location::current(), "get_CurrentProfile failed: 0x", hr);
-            if (fwPolicy != nullptr)
+            if (fwPolicy != NULL)
             {
                 fwPolicy->Release();
             }
 
-            if (fwMgr != nullptr)
+            if (fwMgr != NULL)
             {
                 fwMgr->Release();
             }
@@ -77,12 +83,11 @@ namespace windows_firewall {
         {
             logger::log(std::source_location::current(), "get_CurrentProfile ha sido iniciado correctamente y ha devuelto el código 0x", hr);
         }
-        return hr;
     }
 
     void WindowsFirewallCleanup(IN INetFwProfile *fwProfile)
     {
-        if (fwProfile != nullptr)
+        if (fwProfile != NULL)
         {
             fwProfile->Release();
         }
@@ -93,8 +98,8 @@ namespace windows_firewall {
         HRESULT hr = S_OK;
         VARIANT_BOOL fwEnabled;
 
-        _ASSERT(fwProfile != nullptr);
-        _ASSERT(fwOn != nullptr);
+        _ASSERT(fwProfile != NULL);
+        _ASSERT(fwOn != NULL);
 
         *fwOn = FALSE;
 
@@ -122,14 +127,14 @@ namespace windows_firewall {
             OUT BOOL *fwAppEnabled)
     {
         HRESULT hr = S_OK;
-        BSTR fwBstrProcessImageFileName = nullptr;
+        BSTR fwBstrProcessImageFileName = NULL;
         VARIANT_BOOL fwEnabled;
-        INetFwAuthorizedApplication *fwApp = nullptr;
-        INetFwAuthorizedApplications *fwApps = nullptr;
+        INetFwAuthorizedApplication *fwApp = NULL;
+        INetFwAuthorizedApplications *fwApps = NULL;
 
-        _ASSERT(fwProfile != nullptr);
-        _ASSERT(fwProcessImageFileName != nullptr);
-        _ASSERT(fwAppEnabled != nullptr);
+        _ASSERT(fwProfile != NULL);
+        _ASSERT(fwProcessImageFileName != NULL);
+        _ASSERT(fwAppEnabled != NULL);
 
         *fwAppEnabled = FALSE;
 
@@ -139,7 +144,12 @@ namespace windows_firewall {
             logger::log_error(std::source_location::current(), "get_AuthorizedApplications failed: 0x", hr);
             SysFreeString(fwBstrProcessImageFileName);
 
-            if (fwApps != nullptr)
+            if (fwApp != NULL)
+            {
+                fwApp->Release();
+            }
+
+            if (fwApps != NULL)
             {
                 fwApps->Release();
             }
@@ -152,12 +162,18 @@ namespace windows_firewall {
         }
 
         fwBstrProcessImageFileName = SysAllocString(fwProcessImageFileName);
-        if (fwBstrProcessImageFileName == nullptr)
+        if (fwBstrProcessImageFileName == NULL)
         {
             hr = E_OUTOFMEMORY;
             logger::log_error(std::source_location::current(), "SysAllocString failed: 0x", hr);
             SysFreeString(fwBstrProcessImageFileName);
-            if (fwApps != nullptr)
+
+            if (fwApp != NULL)
+            {
+                fwApp->Release();
+            }
+
+            if (fwApps != NULL)
             {
                 fwApps->Release();
             }
@@ -178,12 +194,12 @@ namespace windows_firewall {
                 logger::log_error(std::source_location::current(), "get_Enabled failed: 0x", hr);
                 SysFreeString(fwBstrProcessImageFileName);
 
-                if (fwApp != nullptr)
+                if (fwApp != NULL)
                 {
                     fwApp->Release();
                 }
 
-                if (fwApps != nullptr)
+                if (fwApps != NULL)
                 {
                     fwApps->Release();
                 }
@@ -214,14 +230,14 @@ namespace windows_firewall {
     {
 
         HRESULT hr = S_OK;
-        BSTR fwBstrProcessImageFileName = nullptr;
-        BSTR fwBstrName = nullptr;
-        INetFwRule *fwRule = nullptr;
-        INetFwRules *fwRules = nullptr;
+        BSTR fwBstrProcessImageFileName = NULL;
+        BSTR fwBstrName = NULL;
+        INetFwRule *fwRule = NULL;
+        INetFwRules *fwRules = NULL;
 
-        _ASSERT(fwProfile != nullptr);
-        _ASSERT(fwProcessImageFileName != nullptr);
-        _ASSERT(fwName != nullptr);
+        _ASSERT(fwProfile != NULL);
+        _ASSERT(fwProcessImageFileName != NULL);
+        _ASSERT(fwName != NULL);
 
         hr = fwProfile->get_Rules(&fwRules);
         if (FAILED(hr))
@@ -229,7 +245,13 @@ namespace windows_firewall {
             logger::log_error(std::source_location::current(), "get_Rules failed: 0x", hr);
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
-            if (fwRules != nullptr)
+
+            if (fwRule != NULL)
+            {
+                fwRule->Release();
+            }
+
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -243,7 +265,7 @@ namespace windows_firewall {
 
         hr = CoCreateInstance(
                 __uuidof(NetFwRule),
-                nullptr,
+                NULL,
                 CLSCTX_INPROC_SERVER,
                 __uuidof(INetFwRule),
                 (void **)&fwRule);
@@ -253,12 +275,12 @@ namespace windows_firewall {
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
 
-            if (fwRule != nullptr)
+            if (fwRule != NULL)
             {
                 fwRule->Release();
             }
 
-            if (fwRules != nullptr)
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -271,19 +293,19 @@ namespace windows_firewall {
         }
 
         fwBstrProcessImageFileName = SysAllocString(fwProcessImageFileName);
-        if (fwBstrProcessImageFileName == nullptr)
+        if (fwBstrProcessImageFileName == NULL)
         {
             hr = E_OUTOFMEMORY;
             logger::log_error(std::source_location::current(), "SysAllocString failed: 0x", hr);
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
 
-            if (fwRule != nullptr)
+            if (fwRule != NULL)
             {
                 fwRule->Release();
             }
 
-            if (fwRules != nullptr)
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -296,19 +318,19 @@ namespace windows_firewall {
         }
 
         fwBstrName = SysAllocString(fwName);
-        if (fwBstrName == nullptr)
+        if (fwBstrName == NULL)
         {
             hr = E_OUTOFMEMORY;
             logger::log_error(std::source_location::current(), "SysAllocString failed: 0x", hr);
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
 
-            if (fwRule != nullptr)
+            if (fwRule != NULL)
             {
                 fwRule->Release();
             }
 
-            if (fwRules != nullptr)
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -327,12 +349,12 @@ namespace windows_firewall {
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
 
-            if (fwRule != nullptr)
+            if (fwRule != NULL)
             {
                 fwRule->Release();
             }
 
-            if (fwRules != nullptr)
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -351,12 +373,12 @@ namespace windows_firewall {
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
 
-            if (fwRule != nullptr)
+            if (fwRule != NULL)
             {
                 fwRule->Release();
             }
 
-            if (fwRules != nullptr)
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -375,12 +397,12 @@ namespace windows_firewall {
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
 
-            if (fwRule != nullptr)
+            if (fwRule != NULL)
             {
                 fwRule->Release();
             }
 
-            if (fwRules != nullptr)
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -399,12 +421,12 @@ namespace windows_firewall {
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
 
-            if (fwRule != nullptr)
+            if (fwRule != NULL)
             {
                 fwRule->Release();
             }
 
-            if (fwRules != nullptr)
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -423,12 +445,12 @@ namespace windows_firewall {
             SysFreeString(fwBstrProcessImageFileName);
             SysFreeString(fwBstrName);
 
-            if (fwRule != nullptr)
+            if (fwRule != NULL)
             {
                 fwRule->Release();
             }
 
-            if (fwRules != nullptr)
+            if (fwRules != NULL)
             {
                 fwRules->Release();
             }
@@ -443,12 +465,12 @@ namespace windows_firewall {
         SysFreeString(fwBstrProcessImageFileName);
         SysFreeString(fwBstrName);
 
-        if (fwRule != nullptr)
+        if (fwRule != NULL)
         {
             fwRule->Release();
         }
 
-        if (fwRules != nullptr)
+        if (fwRules != NULL)
         {
             fwRules->Release();
         }
@@ -462,7 +484,7 @@ namespace windows_firewall {
 
         hr = CoCreateInstance(
                 __uuidof(NetFwPolicy2),
-                nullptr,
+                NULL,
                 CLSCTX_INPROC_SERVER,
                 __uuidof(INetFwPolicy2),
                 (void **)ppNetFwPolicy2);
@@ -478,10 +500,10 @@ namespace windows_firewall {
     int start_firewall_block() {
         HRESULT hr = S_OK;
         HRESULT comInit = E_FAIL;
-        INetFwProfile *fwProfile = nullptr;
+        INetFwProfile *fwProfile = NULL;
 
         comInit = CoInitializeEx(
-                nullptr,
+                0,
                 COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
         if (comInit != RPC_E_CHANGED_MODE)
@@ -581,11 +603,11 @@ namespace windows_firewall {
 
                 if (!is_elevated())
                 {
-                    MessageBox(FindWindowA("ConsoleWindowClass", nullptr), "Para que el programa funcione debes de iniciarlo como administrador", "freesight", MB_OK | MB_ICONERROR);
+                    MessageBox(FindWindowA("ConsoleWindowClass", NULL), "Para que el programa funcione debes de iniciarlo como administrador", "freesight", MB_OK | MB_ICONERROR);
                     return 0;
                 }
 
-                INetFwPolicy2* pNetFwPolicy2 = nullptr;
+                INetFwPolicy2* pNetFwPolicy2 = NULL;
                 WFCOMInitialize(&pNetFwPolicy2);
 
                 int random_number = rand() % 65535 + 1;
@@ -632,3 +654,6 @@ namespace windows_firewall {
     }
 
 }
+
+#pragma clang diagnostic pop
+#pragma clang diagnostic pop
