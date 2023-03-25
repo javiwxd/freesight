@@ -1,8 +1,11 @@
 
 -- Freesight para Windows --
 
-Esto es un simple programa con el único propósito de desbloquear una parte de los bloqueos de los
-ordenadores de los centros educativos de la Comunidad de Madrid.
+La intención de este programa es bloquear la conexión a la red local del programa "Insight" de Faronics, desbloquear el administrador de tareas y las páginas web restringidas.
+La principal vulnerabilidad que explota este programa es la libertad que tiene el usuario para ejecutar cualquier programa en el ordenador con permisos de administrador, y que
+la versión de Insight utilizada es antigua, utilizando el industry-standard disassembler se puede ver que a travels de un exploit en una versión antigua de una de sus librerías
+es posible hacer inyección de memoria en el proceso de Insight, pero inyectar memoria haría que el antivirus detectara este programa como un virus, por lo que se ha optado por
+bloquear la conexión a la red local del programa Insight a través del Firewall de Windows.
 
 -- Fases de desbloqueo
 

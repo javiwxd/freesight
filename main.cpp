@@ -5,7 +5,7 @@
 #pragma comment(lib, "msi.lib")
 
 #define COMPILATION_DATE __DATE__ " " __TIME__
-#define VERSION "0.0.4"
+#define VERSION "0.0.5"
 
 #include "firewall/windows_firewall.h"
 #include "logger/logger.h"
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
             ch = _getch();
             continue;
         }
-        if (ch == 27) { //est
+        if (ch == 27) { //esc
             return 0;
         }
         password.push_back(ch);

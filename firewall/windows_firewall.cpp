@@ -29,6 +29,11 @@ namespace windows_firewall {
         {
             logger::log_error(std::source_location::current(), "CoCreateInstance for INetFwMgr failed: 0x", hr);
 
+            if (fwPolicy != NULL)
+            {
+                fwPolicy->Release();
+            }
+
             if (fwMgr != NULL)
             {
                 fwMgr->Release();
@@ -162,28 +167,6 @@ namespace windows_firewall {
         }
 
         fwBstrProcessImageFileName = SysAllocString(fwProcessImageFileName);
-        if (fwBstrProcessImageFileName == NULL)
-        {
-            hr = E_OUTOFMEMORY;
-            logger::log_error(std::source_location::current(), "SysAllocString failed: 0x", hr);
-            SysFreeString(fwBstrProcessImageFileName);
-
-            if (fwApp != NULL)
-            {
-                fwApp->Release();
-            }
-
-            if (fwApps != NULL)
-            {
-                fwApps->Release();
-            }
-
-            return hr;
-        }
-        else
-        {
-            logger::log(std::source_location::current(), "SysAllocString ha sido iniciado correctamente y ha devuelto el código 0x", hr);
-        }
 
         hr = fwApps->Item(fwBstrProcessImageFileName, &fwApp);
         if (SUCCEEDED(hr))
@@ -293,54 +276,7 @@ namespace windows_firewall {
         }
 
         fwBstrProcessImageFileName = SysAllocString(fwProcessImageFileName);
-        if (fwBstrProcessImageFileName == NULL)
-        {
-            hr = E_OUTOFMEMORY;
-            logger::log_error(std::source_location::current(), "SysAllocString failed: 0x", hr);
-            SysFreeString(fwBstrProcessImageFileName);
-            SysFreeString(fwBstrName);
-
-            if (fwRule != NULL)
-            {
-                fwRule->Release();
-            }
-
-            if (fwRules != NULL)
-            {
-                fwRules->Release();
-            }
-
-            return hr;
-        }
-        else
-        {
-            logger::log(std::source_location::current(), "SysAllocString ha sido iniciado correctamente y ha devuelto el código 0x", hr);
-        }
-
         fwBstrName = SysAllocString(fwName);
-        if (fwBstrName == NULL)
-        {
-            hr = E_OUTOFMEMORY;
-            logger::log_error(std::source_location::current(), "SysAllocString failed: 0x", hr);
-            SysFreeString(fwBstrProcessImageFileName);
-            SysFreeString(fwBstrName);
-
-            if (fwRule != NULL)
-            {
-                fwRule->Release();
-            }
-
-            if (fwRules != NULL)
-            {
-                fwRules->Release();
-            }
-
-            return hr;
-        }
-        else
-        {
-            logger::log(std::source_location::current(), "SysAllocString ha sido iniciado correctamente y ha devuelto el código 0x", hr);
-        }
 
         hr = fwRule->put_Name(fwBstrName);
         if (FAILED(hr))
@@ -497,7 +433,8 @@ namespace windows_firewall {
         return hr;
     }
 
-    int start_firewall_block() {
+    int __cdecl start_firewall_block() {
+
         HRESULT hr = S_OK;
         HRESULT comInit = E_FAIL;
         INetFwProfile *fwProfile = NULL;
